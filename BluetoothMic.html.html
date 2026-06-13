@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BluetoothMic — Wireless Mic for Android</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #09090f; color: #e2e2f0; }
+
+  /* NAV */
+  nav { background: #09090f; border-bottom: 1px solid #1a1a2e; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo svg { color: #a78bfa; }
+  .nav-logo span { font-size: 16px; font-weight: 600; color: #e2e2f0; letter-spacing: 0.5px; }
+  .nav-links { display: flex; gap: 1.75rem; }
+  .nav-links a { font-size: 14px; color: #6b6b8a; text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: #a78bfa; }
+  .nav-btn { background: #7c3aed; color: #fff; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; border: none; cursor: pointer; text-decoration: none; transition: background 0.2s; }
+  .nav-btn:hover { background: #6d28d9; }
+
+  /* HERO */
+  .hero { padding: 5rem 2rem 4rem; text-align: center; border-bottom: 1px solid #1a1a2e; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: #1e1030; color: #a78bfa; font-size: 12px; padding: 5px 14px; border-radius: 20px; border: 1px solid #4c1d95; margin-bottom: 1.75rem; }
+  .hero h1 { font-size: 48px; font-weight: 700; line-height: 1.15; margin-bottom: 1.25rem; color: #e2e2f0; }
+  .hero h1 span { color: #a78bfa; }
+  .hero p { font-size: 17px; color: #6b6b8a; max-width: 520px; margin: 0 auto 2.25rem; line-height: 1.75; }
+  .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: #7c3aed; color: #fff; font-size: 15px; font-weight: 500; padding: 0.85rem 2rem; border-radius: 10px; border: none; cursor: pointer; text-decoration: none; transition: background 0.2s, transform 0.1s; }
+  .btn-primary:hover { background: #6d28d9; }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-secondary { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: #a78bfa; font-size: 15px; padding: 0.85rem 2rem; border-radius: 10px; border: 1px solid #4c1d95; cursor: pointer; text-decoration: none; transition: background 0.2s; }
+  .btn-secondary:hover { background: #1e1030; }
+  .meta-row { display: flex; justify-content: center; gap: 1.75rem; flex-wrap: wrap; margin-top: 2.25rem; }
+  .meta-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #4a4a6a; }
+  .meta-item svg { color: #5b21b6; }
+
+  /* STATS */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid #1a1a2e; }
+  @media(max-width:600px){ .stats { grid-template-columns: repeat(2,1fr); } }
+  .stat-item { padding: 2rem 1rem; text-align: center; border-right: 1px solid #1a1a2e; }
+  .stat-item:last-child { border-right: none; }
+  .stat-num { font-size: 26px; font-weight: 700; color: #a78bfa; }
+  .stat-lbl { font-size: 13px; color: #4a4a6a; margin-top: 5px; }
+
+  /* SECTIONS */
+  section { padding: 4rem 2rem; border-bottom: 1px solid #1a1a2e; max-width: 900px; margin: 0 auto; }
+  .section-label { font-size: 12px; color: #7c3aed; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .section-title { font-size: 28px; font-weight: 600; color: #e2e2f0; margin-bottom: 2rem; }
+
+  /* FEATURES */
+  .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+  .feat-card { background: #0f0f1a; border: 1px solid #1a1a2e; border-radius: 14px; padding: 1.5rem; transition: border-color 0.2s; }
+  .feat-card:hover { border-color: #4c1d95; }
+  .feat-icon { width: 44px; height: 44px; background: #1e1030; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+  .feat-icon svg { color: #a78bfa; }
+  .feat-card h3 { font-size: 15px; font-weight: 600; color: #c4b5fd; margin-bottom: 8px; }
+  .feat-card p { font-size: 13px; color: #4a4a6a; line-height: 1.65; }
+
+  /* STEPS */
+  .steps { display: flex; flex-direction: column; }
+  .step-row { display: flex; gap: 18px; padding: 1.25rem 0; border-bottom: 1px solid #1a1a2e; }
+  .step-row:last-child { border-bottom: none; }
+  .step-left { display: flex; flex-direction: column; align-items: center; }
+  .step-circle { width: 36px; height: 36px; min-width: 36px; border-radius: 50%; background: #1e1030; border: 2px solid #7c3aed; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #a78bfa; }
+  .step-line { width: 2px; flex: 1; background: #1a1a2e; margin-top: 6px; }
+  .step-content { padding-bottom: 4px; }
+  .step-content h4 { font-size: 15px; font-weight: 600; color: #c4b5fd; margin-bottom: 6px; margin-top: 6px; }
+  .step-content p { font-size: 13px; color: #4a4a6a; line-height: 1.65; }
+
+  /* CTA */
+  .cta-section { background: #0f0f1a; border-top: 1px solid #1a1a2e; border-bottom: 1px solid #1a1a2e; padding: 4rem 2rem; text-align: center; }
+  .cta-section h2 { font-size: 32px; font-weight: 700; color: #e2e2f0; margin-bottom: 0.75rem; }
+  .cta-section p { font-size: 16px; color: #6b6b8a; margin-bottom: 2rem; }
+
+  /* WARNING */
+  .warning-bar { background: #1a1000; border-top: 1px solid #2a1f00; padding: 0.85rem 2rem; display: flex; align-items: center; gap: 12px; }
+  .warning-bar svg { color: #f59e0b; flex-shrink: 0; }
+  .warning-bar p { font-size: 13px; color: #92660a; line-height: 1.5; }
+
+  /* FOOTER */
+  footer { padding: 1.5rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; background: #09090f; }
+  footer p { font-size: 13px; color: #2e2e4a; }
+  .footer-links { display: flex; gap: 1.25rem; }
+  .footer-links a { font-size: 13px; color: #2e2e4a; text-decoration: none; }
+  .footer-links a:hover { color: #6b6b8a; }
+
+  @media(max-width:640px){
+    .hero h1 { font-size: 32px; }
+    .nav-links { display: none; }
+    section { padding: 2.5rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M7 7l10 10-5 5V2l5 5L7 17"/></svg>
+    <span>BluetoothMic</span>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#install">Install</a>
+    <a href="#download">Download</a>
+  </div>
+  <a class="nav-btn" href="https://drive.google.com/uc?export=download&id=1wd_ufweZ0kqfyvAIIMrYikoIt5FHl2hk">Download APK</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01z"/></svg>
+    v1.0.0 — Now available
+  </div>
+  <h1>Your Bluetooth device,<br>now a <span>wireless mic</span></h1>
+  <p>BluetoothMic turns any paired Bluetooth device into a fully functional microphone for Android. No cables, no hassle, completely free.</p>
+  <div class="hero-btns">
+    <a class="btn-primary" href="https://drive.google.com/uc?export=download&id=1wd_ufweZ0kqfyvAIIMrYikoIt5FHl2hk">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download APK — Free
+    </a>
+    <a class="btn-secondary" href="#install">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      How to install
+    </a>
+  </div>
+  <div class="meta-row">
+    <span class="meta-item">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+      Android 8.0+
+    </span>
+    <span class="meta-item">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      ~12 MB
+    </span>
+    <span class="meta-item">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      No ads
+    </span>
+    <span class="meta-item">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      100% Free
+    </span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat-item"><div class="stat-num">12 MB</div><div class="stat-lbl">App size</div></div>
+  <div class="stat-item"><div class="stat-num">8.0+</div><div class="stat-lbl">Android</div></div>
+  <div class="stat-item"><div class="stat-num">Free</div><div class="stat-lbl">Price</div></div>
+  <div class="stat-item"><div class="stat-num">0</div><div class="stat-lbl">Ads</div></div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-label">Features</div>
+  <div class="section-title">Everything you need</div>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M7 7l10 10-5 5V2l5 5L7 17"/></svg>
+      </div>
+      <h3>Bluetooth audio</h3>
+      <p>Pair any Bluetooth device and use it as a microphone instantly.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M2 12h2m16 0h2M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/><circle cx="12" cy="12" r="4"/></svg>
+      </div>
+      <h3>Low latency</h3>
+      <p>Near real-time audio streaming with minimal delay.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <h3>Battery saver</h3>
+      <p>Optimized background usage so you can run long sessions.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+      </div>
+      <h3>Easy setup</h3>
+      <p>One-tap connect — no technical skills required at all.</p>
+    </div>
+  </div>
+</section>
+
+<!-- INSTALL -->
+<section id="install">
+  <div class="section-label">Installation</div>
+  <div class="section-title">Get started in 3 steps</div>
+  <div class="steps">
+    <div class="step-row">
+      <div class="step-left"><div class="step-circle">1</div><div class="step-line"></div></div>
+      <div class="step-content">
+        <h4>Download the APK</h4>
+        <p>Tap the download button to save the BluetoothMic APK file to your Android device.</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-left"><div class="step-circle">2</div><div class="step-line"></div></div>
+      <div class="step-content">
+        <h4>Enable unknown sources</h4>
+        <p>Go to Settings → Security → enable "Install unknown apps" for your browser or file manager.</p>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-left"><div class="step-circle">3</div></div>
+      <div class="step-content">
+        <h4>Install and launch</h4>
+        <p>Open the downloaded APK file, tap Install, then open BluetoothMic and pair your device.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section" id="download">
+  <h2>Ready to go wireless?</h2>
+  <p>Download BluetoothMic for free — no sign up, no account needed.</p>
+  <a class="btn-primary" href="https://drive.google.com/uc?export=download&id=1wd_ufweZ0kqfyvAIIMrYikoIt5FHl2hk">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    Download APK — Free
+  </a>
+</div>
+
+<!-- WARNING -->
+<div class="warning-bar">
+  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  <p>This APK is distributed outside the Google Play Store. Only install from sources you trust.</p>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 BluetoothMic. All rights reserved.</p>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>
